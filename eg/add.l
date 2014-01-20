@@ -1,23 +1,24 @@
 # comment
 .name
-	AND circuit
+    AND circuit
 
 .desc
-	This allows blah blah blah
+    This allows blah blah blah
 
 .input
-	my_a	first wire
-	my_b	second wire
+    my_a	first wire
+    my_b	second wire
 
 .output
-	my_c	result
+    my_c	result
 
 .process
-	[and] @a = my_a, @b = my_b, res = @c
-	-- my_c = c
+    [and] @a = my_a, @b = my_b, res = @c
+    [sub]
+    -- my_c = c
 
 .debug
-	my_c	internal and result
+    my_c	internal and result
 
 # -- means plain wire without any circuit
 # [name] means use some circuit, his wires are identified via @syntax
