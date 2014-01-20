@@ -1,0 +1,32 @@
+#! /usr/bin/perl
+
+use strict;
+use warnings;
+
+use FindBin qw/$Bin/;
+use lib $Bin . '/../lib';
+use Gloci::App;
+
+my $gloci = new Gloci::App;
+
+$gloci->run();
+
+__END__
+
+=head1 NAME
+
+gloci - "Genius Loci" logical circuit emulator
+
+=head1 SYNOPSIS
+
+    gloci [options] [file]
+
+    Options:
+        -h|--help      Brief help message
+        -d|--debug     Print debug information during execution
+        -v|--verbose   Verbose processing (more information), can be used more times, -vv set debug on
+        -c|--check     Only check syntax of input file
+        
+    Standard input is used if file is omitted.
+
+=cut
