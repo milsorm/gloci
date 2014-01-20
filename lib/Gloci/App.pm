@@ -111,7 +111,9 @@ sub _parse_arguments {
         my $fh = new IO::File $file, 'r';
         croak( "File $file cannot be open and read." ) unless defined $fh;
         
-        ( undef, undef, my $fname ) = File::Spec( $file )->splitpath( $file );
+        ( undef, undef, my $fname ) = File::Spec->splitpath( $file );
+        $fname =~ s/\.l$//;
+        $fname =~ s/\W//;
         $self->main_name( lc $fname );
         
         $self->_verbose( message => "GLOCI: Processing file $file.", level => 1 );
@@ -152,7 +154,7 @@ sub _process_file {
         
         if ( $circuit =~ /^\[(?<name>\w+)\]$/ ) {
             $circuit = $+{name};
-            next if $circuit =~ /^(not|and|or|osc|led)$/;       # internal circuits, oscilator and led diod
+            next if $circuit =~ /^(not|and|or|osc|zero|port)$/;       # internal circuits, zero level, oscilator and external port connection
             
             my $file = $self->_find_file( file => $circuit . '.l' );
             

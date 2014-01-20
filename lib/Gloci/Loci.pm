@@ -148,8 +148,10 @@ sub load_circuit {
                     my $circuit = $+{circuit};
                     my @connections = ();
                     for ( split /,\s*/, $+{def} ) {
-                        if ( /^(?<to>\@?\w+)\s*=\s*(?<from>\@?\w+)$/ ) {
-                            push @connections, { from => $+{from}, to => $+{to} };    
+                        if ( /^(?<from>\@?\w+)\s*=\s*(?<to>\@?\w+)$/ ) {
+                            my $from = $+{from};  my $to = $+{to};
+                            ( $from, $to ) = ( $to, $from ) if $from !~ /^\@/ && $to =~ /^\@/;
+                            push @connections, { from => $from, to => $to };    
                         } else {
                             croak( "Unknown connection definition $_ for $circuit." );
                         }
@@ -211,10 +213,10 @@ sub print_circuit {
 
     for ( @{ $self->processing } ) {
         my @conn = @{ $_->{connections} };
-        my $first = scalar @conn ? ( $conn[0]->{from} . ' --> ' . $conn[0]->{to} ) : 'none';
+        my $first = scalar @conn ? ( $conn[0]->{from} . ' -- ' . $conn[0]->{to} ) : 'none';
         say sprintf "   %-12s %s", $_->{circuit}, $first;
         shift @conn if @conn;
-        say sprintf "%15s %s", ' ', $_->{from} . ' --> '. $_->{to} for @conn;    
+        say sprintf "%15s %s", ' ', $_->{from} . ' -- '. $_->{to} for @conn;    
     }
 }
 

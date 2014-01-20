@@ -14,7 +14,8 @@
 
 .process
     [and] @a = my_a, @b = my_b, res = @c
-    [sub]
+    [beep]
+    [led] @light = my_a
     -- my_c = c
 
 .debug
@@ -23,5 +24,8 @@
 # -- means plain wire without any circuit
 # [name] means use some circuit, his wires are identified via @syntax
 # = assign wire to wire
-# circuit can be [not], [and], [or], [osc] (oscilator), [led] (LED diode) or external found in name.l file
-# (base directories: current, where file is located, GLOCI_LIB)
+# circuit can be [not], [and], [or], [osc] (oscilator)
+# or universal [port] which can emulate:
+#   [led] (LED diode), [beep] (beeper, sound) and [key] (input state)
+#   all of these will be special circuit based on port with pre-defined address and input/output signals
+# or external found in name.l file (base directories: current, where file is located, GLOCI_LIB)
