@@ -13,7 +13,7 @@ use IO::File;
 use IO::Handle;
 use File::Spec;
 
-use Gloci::Loci;
+use Gloci::Loci::FromFile;
 
 has debug => (
     is      => 'rw',
@@ -138,7 +138,7 @@ sub _process_file {
         my $input => 'IO::Handle',
         my $sysid => 'Str';
 
-    my $loci = new Gloci::Loci handle => $input, verbose => $self->verbose, debug => $self->debug, sysid => $sysid;
+    my $loci = new Gloci::Loci::FromFile handle => $input, verbose => $self->verbose, debug => $self->debug, sysid => $sysid;
 
     croak( "Logical circuit $sysid cannot be loaded." ) unless defined $loci && $loci->ok;
     

@@ -22,6 +22,14 @@
 
 - steps:
   - static circuits
+      displaying 4-bytes and 8-bytes on LED panel
+      add2, add4, add8, add16, add32
+      multiplicators
+      implementation of negative numbers (two's complement code)
+      subtract, divide
+      comparers
+      multiply-adders
+      num2bin, bin2num & display
   - memories (dynamic circuits)
   - sequence reading
   - conditions on byte

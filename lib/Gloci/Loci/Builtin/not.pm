@@ -26,3 +26,5 @@ has output_wires => (
 no Moose;
 __PACKAGE__->meta->make_immutable;
 }
+
+1;

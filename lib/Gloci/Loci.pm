@@ -5,7 +5,6 @@ use 5.12.0;
 use namespace::sweep;
 use Moose::Role;
 use Smart::Args;
-use IO::Handle;
 use Carp;
 
 has sysid => (
@@ -69,7 +68,7 @@ has debug_wires => (
 );
 
 has processing => (
-    is          => 'ro',
+    is          => 'rw',
     isa         => 'ArrayRef',
     init_arg    => undef,
     default     => sub { [] },
@@ -127,3 +126,5 @@ sub required_circuits {
 
 no Moose;
 }
+
+1;

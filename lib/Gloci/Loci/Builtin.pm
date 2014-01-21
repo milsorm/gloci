@@ -10,3 +10,5 @@ with 'Gloci::Loci';
 
 no Moose;
 }
+
+1;
