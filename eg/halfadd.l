@@ -15,3 +15,4 @@
 .process
     [xor]   @a = a, @b = b, @out = out
     [and]   @a = a, @b = b, @out = carry
+    

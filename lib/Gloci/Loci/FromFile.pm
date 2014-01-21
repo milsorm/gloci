@@ -113,41 +113,44 @@ sub load_circuit {
                 if ( $line =~ /^(?<circuit>\[\w+\]|--)(?:\s+(?<def>.*))?$/ ) {
                     my $circuit = $+{circuit};
                     my @connections = ();
-                    for ( split /,\s*/, $+{def} ) {
-                        if ( /^(?<from>\@?\w+)(?:\<(?<fromrfrom>[0-9a-f]):(?<fromrto>[0-9a-f])\>)?\s*=\s*(?<to>\@?\w+)(?:\<(?<torfrom>[0-9a-f]):(?<torto>[0-9a-f])\>)?$/ ) {
-                            my @from = ();  my @to = ();
-                            if ( defined $+{fromrfrom} && $+{fromrfrom} ne '' && defined $+{fromrto} && $+{fromrto} ne '' ) {
-                                @from = $self->range( name => $+{from}, from => $+{fromrfrom}, to => $+{fromrto} );   
+                    
+                    if ( defined $+{def} && $+{def} ) {
+                        for ( split /,\s*/, $+{def} ) {
+                            if ( /^(?<from>\@?\w+)(?:\<(?<fromrfrom>[0-9a-f]):(?<fromrto>[0-9a-f])\>)?\s*=\s*(?<to>\@?\w+)(?:\<(?<torfrom>[0-9a-f]):(?<torto>[0-9a-f])\>)?$/ ) {
+                                my @from = ();  my @to = ();
+                                if ( defined $+{fromrfrom} && $+{fromrfrom} ne '' && defined $+{fromrto} && $+{fromrto} ne '' ) {
+                                    @from = $self->range( name => $+{from}, from => $+{fromrfrom}, to => $+{fromrto} );   
+                                } else {
+                                    @from = ( $+{from} );
+                                }
+                                if ( defined $+{torfrom} && $+{torfrom} ne '' && defined $+{torto} && $+{torto} ne '' ) {
+                                    @to = $self->range( name => $+{from}, from => $+{torfrom}, to => $+{torto} );   
+                                } else {
+                                    @to = ( $+{to} );
+                                }
+                                    
+                                if ( scalar @from == 0 || scalar @to == 0 ) {
+                                    croak( "Invalid assignment in [$circuit]." );
+                                }
+                                    
+                                if ( scalar @from < scalar @to ) {
+                                    my @from_orig = @from;
+                                    @from = ( @from, @from_orig ) while scalar @from < scalar @to;
+                                    pop @from while scalar @from > scalar @to;
+                                } elsif ( scalar @from > scalar @to ) {
+                                    my @to_orig = @to;
+                                    @to = ( @to, @to_orig ) while scalar @from > scalar @to;
+                                    pop @to while scalar @from < scalar @to;
+                                }
+                                    
+                                for my $from ( @from ) {
+                                    my $to = shift @to;
+                                    ( $from, $to ) = ( $to, $from ) if $from !~ /^\@/ && $to =~ /^\@/;
+                                    push @connections, { from => $from, to => $to };
+                                }
                             } else {
-                                @from = ( $+{from} );
+                                croak( "Unknown connection definition $_ for $circuit." );
                             }
-                            if ( defined $+{torfrom} && $+{torfrom} ne '' && defined $+{torto} && $+{torto} ne '' ) {
-                                @to = $self->range( name => $+{from}, from => $+{torfrom}, to => $+{torto} );   
-                            } else {
-                                @to = ( $+{to} );
-                            }
-                            
-                            if ( scalar @from == 0 || scalar @to == 0 ) {
-                                croak( "Invalid assignment in [$circuit]." );
-                            }
-                            
-                            if ( scalar @from < scalar @to ) {
-                                my @from_orig = @from;
-                                @from = ( @from, @from_orig ) while scalar @from < scalar @to;
-                                pop @from while scalar @from > scalar @to;
-                            } elsif ( scalar @from > scalar @to ) {
-                                my @to_orig = @to;
-                                @to = ( @to, @to_orig ) while scalar @from > scalar @to;
-                                pop @to while scalar @from < scalar @to;
-                            }
-
-                            for my $from ( @from ) {
-                                my $to = shift @to;
-                                ( $from, $to ) = ( $to, $from ) if $from !~ /^\@/ && $to =~ /^\@/;
-                                push @connections, { from => $from, to => $to };
-                            }
-                        } else {
-                            croak( "Unknown connection definition $_ for $circuit." );
                         }
                     }
                     

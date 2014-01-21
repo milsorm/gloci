@@ -1,9 +1,4 @@
-- find other circuits as *.l
-
-- allow set input wires through command line or permute unset wires
-
 - implementation:
-  - load everything
   - check correctness
   - implement execution for file based
   - implement execution for bultins

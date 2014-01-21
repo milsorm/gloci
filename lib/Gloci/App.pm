@@ -12,6 +12,7 @@ use Carp;
 use IO::File;
 use IO::Handle;
 use File::Spec;
+use File::Find::Rule;
 
 use Gloci::Circuits;
 use Gloci::BuiltinFactory;
@@ -53,6 +54,18 @@ has circuits => (
     init_arg    => undef,
 );
 
+has origpath => (
+    is          => 'rw',
+    isa         => 'Str',
+    default     => '',
+);
+
+has input_wires => (
+    is          => 'rw',
+    isa         => 'HashRef',
+    default     => sub { { } },
+);
+
 sub run {
     args my $self;
 
@@ -63,6 +76,11 @@ sub run {
     $self->_build_builtins();    
     
     $self->_process_file( input => $self->{file}, sysid => $self->{main_name} );
+
+    # TODO:
+    # - start process the whole circuit
+    
+    ...;    
 }
 
 sub _build_builtins {
@@ -99,7 +117,7 @@ sub _parse_arguments {
 
     ++ $use_stdio unless $use_stdio || @ARGV;
     
-    pod2usage( -verbose => 0, -exitval => 2, -output => \*STDERR, -message => "Incorrect arguments.\n" ) if ( $use_stdio && @ARGV ) || ( ! $use_stdio && @ARGV > 1 );
+    pod2usage( -verbose => 0, -exitval => 2, -output => \*STDERR, -message => "Incorrect arguments.\n" ) if ( $use_stdio && @ARGV );
     pod2usage( -verbose => 1 ) if $help;
     
     $verbose += 2 if $force_verbose;
@@ -127,13 +145,25 @@ sub _parse_arguments {
         my $fh = new IO::File $file, 'r';
         croak( "File $file cannot be open and read." ) unless defined $fh;
         
-        ( undef, undef, my $fname ) = File::Spec->splitpath( $file );
+        my ( $volume, $path, $fname ) = File::Spec->splitpath( $file );
         $fname =~ s/\.l$//;
         $fname =~ s/\W//;
         $self->main_name( lc $fname );
         
         $self->_verbose( message => "GLOCI: Processing file $file.", level => 1 );
         $self->file( $fh );
+        
+        $self->origpath( File::Spec->catpath( $volume, $path ) );
+        
+        for ( @ARGV ) {
+            pod2usage( -verbose => 0, -exitval => 3, -output => \*STDERR, -message => "Invalid format of input wires.\n" ) if !/=[01]$/;
+            
+            my ( $wire, $value ) = split /=/;
+            pod2usage( -verbose => 0, -exitval => 4, -output => \*STDERR, -message => "Duplicate input wire $wire.\n" ) if exists $self->input_wires->{$wire};
+
+            $self->input_wires->{$wire} = $value;
+            $self->_verbose( message => "GLOCI: Input wire $wire set to $value.", level => 1 );
+        }
     }
 }
 
@@ -142,10 +172,25 @@ sub _find_file {
         my $self,
         my $file => 'Str';
     
-    # find $file in current directory, in directory where original circuit was found and in GLOCI_LIB
-    ...;
+    # find $file in current directory
+    -e $file && -f $file && return $file;
+
+    # in directory where original circuit was found
+    if ( $self->origpath ) {
+        my $fname = File::Spec->catfile( $self->origpath, $file );
+        -e $fname && -f $fname && return $fname;
+    }
     
-    return '';  # not found
+    # in GLOCI_LIB (semicolon separated list)
+    if ( exists $ENV{GLOCI_LIB} && $ENV{GLOCI_LIB} ) {
+        my @inc = split /;/, $ENV{GLOCI_LIB};
+        for ( File::Find::Rule->file()->name( $file )->maxdepth( 1 )->in( @inc ) ) {
+            -e $_ && -f $_ && return $_;
+        }
+    }
+    
+    # not found
+    return '';
 }
 
 sub _process_file {
@@ -176,10 +221,11 @@ sub _process_file {
             my $file = $self->_find_file( file => $circuit . '.l' );
             
             if ( $file ) {
-                $self->_verbose( message => "I need load $file.", level => 1 );
+                my $fh = new IO::File $file, 'r';
+                croak( "File $file cannot be open and read." ) unless defined $fh;
                 
-                # - load external recursively
-                ...;
+                $self->_verbose( message => "GLOCI: Processing file $file.", level => 1 );                
+                $self->_process_file( input => $fh, sysid => lc $circuit );
             } else {
                 croak( "Definition for circuit [$circuit] cannot be found." );
             }
@@ -187,11 +233,6 @@ sub _process_file {
             croak( "Unknown logical circuit [$circuit] used in $sysid." );
         }
     }
-    
-    # TODO:
-    # - start process the whole circuit
-    
-    ...;
     
     undef $input;
 }

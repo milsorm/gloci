@@ -19,7 +19,7 @@ gloci - "Genius Loci" logical circuit emulator
 
 =head1 SYNOPSIS
 
-    gloci [options] [file]
+    gloci [options] [file] [input wires]
 
     Options:
         -h|--help      Brief help message
@@ -27,6 +27,9 @@ gloci - "Genius Loci" logical circuit emulator
         -v|--verbose   Verbose processing (more information), can be used more times, -vv set debug on
         -c|--check     Only check syntax of input file
         
-    Standard input is used if file is omitted.
+    Standard input is used if file is omitted but input wires cannot be specified (use - instead).
+    
+    Example:
+        ./gloci add.l a=1 b=0
 
 =cut
