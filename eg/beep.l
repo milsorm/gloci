@@ -4,19 +4,15 @@
 .desc
     Make a short sound (just like "\a")
     
-.debug
+.temp
     zero        Signal 0
     carrier     Signal 1
+    ignore      Ignore wire
 
 .process
-    [zero]  zero = @zero
-    [not]   @in = zero, @out = carrier
-    [port]  @addr0 = carrier, @addr1 = zero, @addr2 = zero, @addr3 = zero, @arg00 = zero, @arg01 = zero, @arg02 = zero, @arg03 = zero
-
-# [zero] is generator of 0 signal
-# negotiator creates 1 from 0
-
-# [port] receive 4-bit @addr and 4-bit @arg0
-# 0001 ... beeper
-# 0010 ... led diode
-# 0011 ... input key
+    [zero]  @zero = zero                                                # [zero] is generator of 0 signal
+    [not]   @in = zero, @out = carrier                                  # inverter creates 1 from 0
+    [port]  @addr0 = carrier, @addr<1:3> = zero, _                      # 0001 means beeper
+            @arg0<0:7> = zero, @arg1<0:7> = zero, @arg2<0:7> = zero, @arg3<0:7> = zero, _
+            @signal = ignore, _
+            @data0<0:7> = ignore, @data1<0:7> = ignore, @data2<0:7> = ignore, @data3<0:7> = ignore

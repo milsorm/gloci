@@ -1,0 +1,28 @@
+Syntax          ::= Comment* Groups
+Groups          ::= Group Comment? Groups
+
+Group           ::= ( '.name' | '.desc' ) EndLine Description | ( '.input' | '.output' | '.debug' | '.temp' ) EndLine Wires | '.process' EndLine Processes
+
+Description     ::= ( Letter | Special ) ( AnyChar | '\n' )* EndLine
+Wires           ::= Wire*
+Wire            ::= Literal Whitespace+ ( Letter | Special ) AnyChar* EndLine
+Processes       ::= CircuitDef* EndLine
+CircuitDef      ::= Circuit ( Eq ( ',' Cont? Eq )* )?
+Eq              ::= Variable '=' Variable Cont?
+Cont            ::= '_' Whitespaces* ( Comment | '\n' )
+
+EndLine         ::= ( comment | '\n' )+
+
+Variable        ::= ( Literal | '@' Literal ) ( '<' Range ':' Range '>' )?
+Comment         ::= ( '#' AnyChar* '\n'+ )+
+Circuit         ::= '--' | '[' Literal ']'
+
+Literal         ::= Letter+
+Range           ::= ( Letter | Numeric )+
+AnyChar         ::= Letter | Whitespace | Special
+Whitespace      ::= ' ' | '\t'
+
+Letter          ::= Character | Numeric | '_'
+Character       ::= [a-zA-Z]
+Numeric         ::= [0-9]
+Special         ::= [^a-zA-Z0-9 \t\n#]

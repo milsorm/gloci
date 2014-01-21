@@ -1,0 +1,30 @@
+- allow bulk operations in wires definition
+- bulk operation var<0:f> = @var<0:f> ... will provide var0 = @var0, var1 = @var1 ...
+- bulk operation like var<0:f> = zero or var<0:f> = other<0:3> (var4 = other0 again...)
+
+- Gloci::Circuits for list of circuits (specialization)
+- Gloci::Loci::BuiltinFactory as factory for builtins
+
+- allow set input wires through command line or permute unset wires
+
+- implementation:
+  - load everything
+  - check correctness
+  - implement execution for file based
+  - implement execution for bultins
+  - set up signal to wires from command line
+  - permute unset wires
+
+- led as led panel (16 diods) + address
+- display as another port command for instructing character set (ascii, 80x25)
+
+- can be converted to bytecode (fixed length information) and processed in C program (in case memory, speed)
+
+- steps:
+  - static circuits
+  - memories (dynamic circuits)
+  - sequence reading
+  - conditions on byte
+  - iterator + memory access
+  - eprom building from file
+  - computers

@@ -1,0 +1,45 @@
+List of official builtin circuits:
+
+--      pure wire, just connect other wires
+
+[not]   Inverter
+        ->  @in         Input signal
+        <-  @out        Inverted signal
+        
+[and]   Logical conjunction
+        ->  @a          Input signal A
+        ->  @b          Input signal B
+        <-  @out        Result of C = A & B
+        
+[or]    Logical disjunction
+        ->  @a          Input signal A
+        ->  @b          Input signal B
+        <-  @out        Result of C = A | B
+        
+[zero]  Universal ground (zero signal)
+        <-  @zero       Always signal 0
+        
+[osc]   Oscilator
+        <-  @tick       Changed 1 and 0 depending on time
+
+[port]  Input/output devices interface
+        ->  @addr<0:3>  4-bit address of device
+        ->  @arg0<0:7>  8-bit argument 0
+        ->  @arg1<0:7>  8-bit argument 1
+        ->  @arg2<0:7>  8-bit argument 2
+        ->  @arg3<0:7>  8-bit argument 3
+        <-  @status     1-bit signal level
+        <-  @data0<0:7> 8-bit data byte 0
+        <-  @data1<0:7> 8-bit data byte 1
+        <-  @data2<0:7> 8-bit data byte 2
+        <-  @data3<0:7> 8-bit data byte 3
+        
+        Devices:
+            0001    Beeper                      no arg/data
+            0010    LED panel                   @arg0 ... 4-byte address of LED, @arg10 ... switch on/off
+            0011    Display                     @arg0,1 ... 8-byte address of x,y coordinates, @arg2 ... character, @arg3 ... color
+            0100    Keyboard                    @data0 ... character, @data1 ... modificators (shifts)
+            0101    Sound device (future?)
+            0110    External drive (future?)
+            0111    Network (future?)
+            1xxx    unimplemented
