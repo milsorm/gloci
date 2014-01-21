@@ -3,7 +3,7 @@ package Gloci::Loci::Builtin::wire 0.01;
 
 use 5.12.0;
 use namespace::sweep;
-use Moose;
+use Mouse;
 
 with 'Gloci::Loci::Builtin';
 
@@ -15,11 +15,11 @@ has '+name' => (
     default     => 'Pure wire',
 );
 
-has description => (
+has '+description' => (
     default     => 'Just connect other wires',
 );
 
-no Moose;
+no Mouse;
 __PACKAGE__->meta->make_immutable;
 }
 

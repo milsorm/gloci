@@ -4,7 +4,7 @@ package Gloci::App 0.01;
 use 5.12.0;
 use namespace::sweep;
 
-use Moose;
+use Mouse;
 use Smart::Args;
 use Getopt::Long;
 use Pod::Usage;
@@ -13,6 +13,8 @@ use IO::File;
 use IO::Handle;
 use File::Spec;
 
+use Gloci::Circuits;
+use Gloci::BuiltinFactory;
 use Gloci::Loci::FromFile;
 
 has debug => (
@@ -47,9 +49,8 @@ has main_name => (
 
 has circuits => (
     is          => 'rw',
-    isa         => 'HashRef',
+    isa         => 'Gloci::Circuits',
     init_arg    => undef,
-    default     => sub { {} },
 );
 
 sub run {
@@ -57,7 +58,22 @@ sub run {
 
     $self->_parse_arguments;
     
+    $self->circuits( new Gloci::Circuits verbose => $self->verbose, debug => $self->debug );
+
+    $self->_build_builtins();    
+    
     $self->_process_file( input => $self->{file}, sysid => $self->{main_name} );
+}
+
+sub _build_builtins {
+    args my $self;
+    
+    my $bfactory = new Gloci::BuiltinFactory verbose => $self->verbose, debug => $self->debug;
+    my %builtins = $bfactory->createBuiltins;
+    for ( keys %builtins ) {
+        $self->circuits->add( sysid => $_, circuit => $builtins{ $_ } );
+        $self->_verbose( message => "GLOCI: Logical builtin circuit [$_] added to repository.", level => 1 );        
+    }
 }
 
 sub _parse_arguments {
@@ -142,24 +158,25 @@ sub _process_file {
 
     croak( "Logical circuit $sysid cannot be loaded." ) unless defined $loci && $loci->ok;
     
-    if ( exists $self->circuits->{ $sysid } ) {
+    if ( $self->circuits->exist( sysid => $sysid ) ) {
         croak( "Logical circuit $sysid already exists." );
     } else {
-        $self->circuits->{ $sysid } = $loci;
-        $self->_verbose( message => "GLOCI: Logical circuit $sysid added to repository.", level => 1 );
+        $self->circuits->add( sysid => $sysid, circuit => $loci );
+        $self->_verbose( message => "GLOCI: Logical circuit [$sysid] added to repository.", level => 1 );
     }
     
     for my $circuit ( $loci->required_circuits ) {
-        next if $circuit eq '--';                       # just plain wires
+        next if $circuit eq '--';
         
         if ( $circuit =~ /^\[(?<name>\w+)\]$/ ) {
             $circuit = $+{name};
-            next if $circuit =~ /^(not|and|or|osc|zero|port)$/;       # internal circuits, zero level, oscilator and external port connection
+            next if $self->circuits->exist( sysid => $circuit );
             
+            $self->_verbose( message => "GLOCI: I am searching for $circuit.l.", level => 1 );
             my $file = $self->_find_file( file => $circuit . '.l' );
             
             if ( $file ) {
-                say "I need load $file.";
+                $self->_verbose( message => "I need load $file.", level => 1 );
                 
                 # - load external recursively
                 ...;
@@ -167,7 +184,7 @@ sub _process_file {
                 croak( "Definition for circuit [$circuit] cannot be found." );
             }
         } else {
-            croak( "Unknown logical circuit $circuit used in $sysid." );
+            croak( "Unknown logical circuit [$circuit] used in $sysid." );
         }
     }
     
@@ -188,6 +205,6 @@ sub _verbose {
     print STDERR $message . "\n" if $self->verbose >= $level;
 }
 
-no Moose;
+no Mouse;
 __PACKAGE__->meta->make_immutable;
 }

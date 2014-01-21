@@ -3,7 +3,7 @@ package Gloci::Loci 0.01;
 
 use 5.12.0;
 use namespace::sweep;
-use Moose::Role;
+use Mouse::Role;
 use Smart::Args;
 use Carp;
 
@@ -124,7 +124,7 @@ sub required_circuits {
     return map { $_->{circuit} } @{ $self->processing };
 }
 
-no Moose;
+no Mouse;
 }
 
 1;

@@ -1,5 +1,4 @@
-- Gloci::Circuits for list of circuits (specialization)
-- Gloci::Loci::BuiltinFactory as factory for builtins
+- find other circuits as *.l
 
 - allow set input wires through command line or permute unset wires
 

@@ -3,7 +3,7 @@ package Gloci::Loci::Builtin::port 0.01;
 
 use 5.12.0;
 use namespace::sweep;
-use Moose;
+use Mouse;
 
 with 'Gloci::Loci::Builtin';
 
@@ -11,11 +11,11 @@ has '+name' => (
     default     => 'Input/output devices interface',
 );
 
-has description => (
+has '+description' => (
     default     => 'Allow interaction with other devices and external equipment',
 );
 
-has input_wires => (
+has '+input_wires' => (
     default     => sub { {
                     addr0 => 'Bit 0 of device address',
                     addr1 => 'Bit 1 of device address',
@@ -56,7 +56,7 @@ has input_wires => (
                     } },
 );
 
-has output_wires => (
+has '+output_wires' => (
     default     => sub { {
                     status => 'Status flag',
                     data00 => 'Bit 0 of 1st data byte',
@@ -94,7 +94,7 @@ has output_wires => (
                     } },
 );
 
-no Moose;
+no Mouse;
 __PACKAGE__->meta->make_immutable;
 }
 

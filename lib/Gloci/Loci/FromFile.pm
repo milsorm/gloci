@@ -3,8 +3,7 @@ package Gloci::Loci::FromFile 0.01;
 
 use 5.12.0;
 use namespace::sweep;
-use Moose;
-use Moose::Util::TypeConstraints;
+use Mouse;
 use Smart::Args;
 use IO::Handle;
 use Carp;
@@ -179,7 +178,7 @@ sub load_circuit {
     
     $self->ok( 1 );
     
-    $self->print_circuit if $self->verbose;
+    $self->print_circuit if $self->verbose >= 2;
 }
 
 sub range {
@@ -196,7 +195,7 @@ sub range {
     return map { $name . $_ } split //, $indices;
 }
 
-no Moose;
+no Mouse;
 __PACKAGE__->meta->make_immutable;
 }
 

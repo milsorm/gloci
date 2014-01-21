@@ -3,7 +3,7 @@ package Gloci::Loci::Builtin::not 0.01;
 
 use 5.12.0;
 use namespace::sweep;
-use Moose;
+use Mouse;
 
 with 'Gloci::Loci::Builtin';
 
@@ -11,19 +11,19 @@ has '+name' => (
     default     => 'Logical inverter (NOT)',
 );
 
-has description => (
+has '+description' => (
     default     => 'out = ! in',
 );
 
-has input_wires => (
+has '+input_wires' => (
     default     => sub { { in => 'Input signal' } },
 );
 
-has output_wires => (
+has '+output_wires' => (
     default     => sub { { out => 'Inverted signal' } },
 );
 
-no Moose;
+no Mouse;
 __PACKAGE__->meta->make_immutable;
 }
 
