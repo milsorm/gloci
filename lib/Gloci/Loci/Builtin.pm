@@ -8,6 +8,17 @@ use Smart::Args;
 
 with 'Gloci::Loci';
 
+sub execute {
+    args
+        my $self,
+        my $inputs = 'HashRef';
+    
+    # abstract    
+    ...;
+    
+    return {};
+}
+
 no Mouse;
 }
 

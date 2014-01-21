@@ -124,6 +124,22 @@ sub required_circuits {
     return map { $_->{circuit} } @{ $self->processing };
 }
 
+# transform inputs to outputs
+sub execute {
+    args
+        my $self,
+        my $inputs = 'HashRef';
+
+    # plan:
+    # - check if all inputs are present
+    # - call all circuits with filled inputs (known) -- need: find circuits for which we know all input :)
+    # - get output from these circuits to temporary / debug
+    # - loop until all circuits are satisfied (every circuit call once)
+    # - return output wires
+    
+    return {};
+}
+
 no Mouse;
 }
 

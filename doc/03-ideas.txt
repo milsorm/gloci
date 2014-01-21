@@ -1,3 +1,6 @@
+- move to App::Gloci from Gloci:: ?
+- prepare as dzil package for easy deployment ?
+
 - implementation:
   - check correctness
   - implement execution for file based
