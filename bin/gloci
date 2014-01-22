@@ -1,5 +1,6 @@
 #! /usr/bin/perl
 # PODNAME: gloci
+# ABSTRACT: Genius Loci logical circuit emulator
 
 use strict;
 use warnings;
