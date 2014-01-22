@@ -6,19 +6,8 @@ use namespace::sweep;
 use Mouse;
 use Smart::Args;
 use Module::Util qw/find_in_namespace/;
-use Module::Load;
 
-has debug => (
-    is      => 'rw',
-    isa     => 'Bool',
-    default => 0,
-);
-
-has verbose => (
-    is      => 'rw',
-    isa     => 'Int',
-    default => 0,
-);
+extends 'Gloci::Base';
 
 sub createBuiltins {
     args my $self;
@@ -34,21 +23,11 @@ sub createBuiltins {
 
         $self->_verbose( message => "GLOCI: Find [$circuit_name] in $module.", level => 1 );
         
-        load $module;
-        my $loci = $module->new( sysid => $circuit_name, verbose => $self->verbose, debug => $self->debug );
+        my $loci = $self->createInstance( class => $module, args => [ sysid => $circuit_name ] );
         $circuits{ $circuit_name } = $loci;
     }
     
     return %circuits;
-}
-
-sub _verbose {
-    args
-        my $self,
-        my $message => 'Str',
-        my $level => { isa => 'Int', optional => 1, default => 1 };
-        
-    print STDERR $message . "\n" if $self->verbose >= $level;
 }
 
 no Mouse;

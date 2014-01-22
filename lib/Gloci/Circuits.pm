@@ -8,19 +8,9 @@ use Mouse::Util::TypeConstraints;
 use Smart::Args;
 use Carp;
 
+extends 'Gloci::Base';
+
 role_type 'Gloci::Loci';
-
-has debug => (
-    is          => 'ro',
-    isa         => 'Bool',
-    default     => 0,
-);
-
-has verbose => (
-    is          => 'ro',
-    isa         => 'Int',
-    default     => 0,
-);
 
 has circuits => (
     is          => 'rw',
@@ -48,15 +38,6 @@ sub exist {
         my $sysid => 'Str';
         
     return exists $self->circuits->{ $sysid };
-}
-
-sub _verbose {
-    args
-        my $self,
-        my $message => 'Str',
-        my $level => { isa => 'Int', optional => 1, default => 1 };
-        
-    print STDERR $message . "\n" if $self->verbose >= $level;
 }
 
 no Mouse;

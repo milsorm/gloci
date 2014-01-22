@@ -4,11 +4,24 @@ package Gloci::Loci::FromFile 0.01;
 use 5.12.0;
 use namespace::sweep;
 use Mouse;
+use Mouse::Util::TypeConstraints;
 use Smart::Args;
 use IO::Handle;
 use Carp;
 
+extends 'Gloci::Base';
+
 with 'Gloci::Loci';
+
+subtype Char => (
+    as 'String',
+    where { 'length $_ == 1' }
+);
+
+subtype HexChar => (
+    as 'Char',
+    where { $_ =~ /^[0-9a-f]$/ }
+);
 
 has handle => (
     is          => 'ro',
@@ -188,8 +201,8 @@ sub range {
     args
         my $self,
         my $name => 'Str',
-        my $from => 'Str',
-        my $to => 'Str';
+        my $from => 'HexChar',
+        my $to => 'HexChar';
     
     my $indices = '0123456789abcdef';   
     $indices =~ s/^.*(?=$from)//;
@@ -199,6 +212,7 @@ sub range {
 }
 
 no Mouse;
+no Mouse::Util::TypeConstraints;
 __PACKAGE__->meta->make_immutable;
 }
 

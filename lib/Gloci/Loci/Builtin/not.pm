@@ -5,6 +5,8 @@ use 5.12.0;
 use namespace::sweep;
 use Mouse;
 
+extends 'Gloci::Base';
+
 with 'Gloci::Loci::Builtin';
 
 has '+name' => (

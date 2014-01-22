@@ -14,11 +14,25 @@ use IO::Handle;
 use File::Spec;
 use File::Find::Rule;
 
-extends 'Gloci::Base';
+use Gloci::Circuits;
+use Gloci::BuiltinFactory;
+use Gloci::Loci::FromFile;
+
+has debug => (
+    is      => 'rw',
+    isa     => 'Bool',
+    default => 0,
+);
 
 has check => (
     is      => 'rw',
     isa     => 'Bool',
+    default => 0,
+);
+
+has verbose => (
+    is      => 'rw',
+    isa     => 'Int',
     default => 0,
 );
 
@@ -57,11 +71,11 @@ sub run {
 
     $self->_parse_arguments;
     
-    $self->circuits( $self->createInstance( class => 'Gloci::Circuits' ) );
+    $self->circuits( new Gloci::Circuits verbose => $self->verbose, debug => $self->debug );
 
     $self->_build_builtins();    
     
-    $self->_process_file( input => $self->file, sysid => $self->main_name );
+    $self->_process_file( input => $self->{file}, sysid => $self->{main_name} );
 
     # TODO:
     # - start process the whole circuit
@@ -72,7 +86,8 @@ sub run {
 sub _build_builtins {
     args my $self;
     
-    my %builtins = $self->createInstance( class => 'Gloci::BuiltinFactory' )->createBuiltins;
+    my $bfactory = new Gloci::BuiltinFactory verbose => $self->verbose, debug => $self->debug;
+    my %builtins = $bfactory->createBuiltins;
     for ( keys %builtins ) {
         $self->circuits->add( sysid => $_, circuit => $builtins{ $_ } );
         $self->_verbose( message => "GLOCI: Logical builtin circuit [$_] added to repository.", level => 1 );        
@@ -106,13 +121,12 @@ sub _parse_arguments {
     pod2usage( -verbose => 1 ) if $help;
     
     $verbose += 2 if $force_verbose;
-
+    
     $self->verbose( $verbose );
     
     $debug = 1 if $verbose >= 2;
     
     $self->debug( $debug );
-    
     $self->check( $check );
     
     if ( $use_stdio ) {
@@ -185,7 +199,7 @@ sub _process_file {
         my $input => 'IO::Handle',
         my $sysid => 'Str';
 
-    my $loci = $self->createInstance( class => 'Gloci::Loci::FromFile', args => [ handle => $input, sysid => $sysid ] );
+    my $loci = new Gloci::Loci::FromFile handle => $input, verbose => $self->verbose, debug => $self->debug, sysid => $sysid;
 
     croak( "Logical circuit $sysid cannot be loaded." ) unless defined $loci && $loci->ok;
     
@@ -221,6 +235,15 @@ sub _process_file {
     }
     
     undef $input;
+}
+
+sub _verbose {
+    args
+        my $self,
+        my $message => 'Str',
+        my $level => { isa => 'Int', optional => 1, default => 1 };
+        
+    print STDERR $message . "\n" if $self->verbose >= $level;
 }
 
 no Mouse;

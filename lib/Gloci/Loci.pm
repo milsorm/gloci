@@ -13,18 +13,6 @@ has sysid => (
     required    => 1,
 );
 
-has debug => (
-    is          => 'ro',
-    isa         => 'Bool',
-    default     => 0,
-);
-
-has verbose => (
-    is          => 'ro',
-    isa         => 'Int',
-    default     => 0,
-);
-
 has name => (
     is          => 'rw',
     isa         => 'Str',
@@ -107,15 +95,6 @@ sub print_circuit {
         shift @conn if @conn;
         say sprintf "%15s %s", ' ', $_->{from} . ' -- '. $_->{to} for @conn;    
     }
-}
-
-sub _verbose {
-    args
-        my $self,
-        my $message => 'Str',
-        my $level => { isa => 'Int', optional => 1, default => 1 };
-        
-    print STDERR $message . "\n" if $self->verbose >= $level;
 }
 
 sub required_circuits {

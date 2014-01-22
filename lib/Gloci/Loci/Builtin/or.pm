@@ -7,6 +7,8 @@ use Mouse;
 
 with 'Gloci::Loci::Builtin';
 
+extends 'Gloci::Base';
+
 has '+name' => (
     default     => 'Logical disjunction (OR)',
 );
