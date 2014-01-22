@@ -1,5 +1,6 @@
 {
 package Local::Gloci::Loci::Builtin::not 0.01;
+# ABSTRACT: Builtin logical inverter (NOT)
 
 use 5.12.0;
 use namespace::sweep;

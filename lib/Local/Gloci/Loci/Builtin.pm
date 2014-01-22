@@ -1,5 +1,6 @@
 {
 package Local::Gloci::Loci::Builtin 0.01;
+# ABSTRACT: Universal role ancestor for builtin circuit
 
 use 5.12.0;
 use namespace::sweep;

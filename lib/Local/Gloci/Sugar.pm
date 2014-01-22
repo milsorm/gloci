@@ -1,5 +1,6 @@
 {
 package Local::Gloci::Sugar 0.01;
+# ABSTRACT: Syntax sugar for instanceof() creating instances through my hidden dependency injection in base class
 
 use 5.12.0;
 use namespace::sweep;

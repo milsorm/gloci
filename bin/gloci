@@ -1,4 +1,5 @@
 #! /usr/bin/perl
+# PODNAME: gloci
 
 use strict;
 use warnings;

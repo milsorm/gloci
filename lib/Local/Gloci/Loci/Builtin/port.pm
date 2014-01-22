@@ -1,5 +1,6 @@
 {
 package Local::Gloci::Loci::Builtin::port 0.01;
+# ABSTRACT: Builtin input/output devices interface through ports
 
 use 5.12.0;
 use namespace::sweep;

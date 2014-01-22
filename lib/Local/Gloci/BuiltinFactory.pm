@@ -1,5 +1,6 @@
 {
 package Local::Gloci::BuiltinFactory 0.01;
+# ABSTRACT: Factory class for constructing all builtin circuits
 
 use 5.12.0;
 use namespace::sweep;

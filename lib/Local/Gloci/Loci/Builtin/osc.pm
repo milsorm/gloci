@@ -1,5 +1,6 @@
 {
 package Local::Gloci::Loci::Builtin::osc 0.01;
+# ABSTRACT: Builtin oscilator
 
 use 5.12.0;
 use namespace::sweep;

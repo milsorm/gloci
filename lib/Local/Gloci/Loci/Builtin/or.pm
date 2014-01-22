@@ -1,5 +1,6 @@
 {
 package Local::Gloci::Loci::Builtin::or 0.01;
+# ABSTRACT: Builtin logical disjunction (OR)
 
 use 5.12.0;
 use namespace::sweep;

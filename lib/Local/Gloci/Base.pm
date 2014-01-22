@@ -1,5 +1,6 @@
 {
 package Local::Gloci::Base 0.01;
+# ABSTRACT: Base class for all Local::Gloci:: classes implementing createInstance() and verbose/debug behaviour
 
 use 5.12.0;
 use namespace::sweep;

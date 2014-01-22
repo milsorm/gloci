@@ -1,5 +1,6 @@
 {
 package Local::Gloci::Loci::Builtin::wire 0.01;
+# ABSTRACT: Builtin pure wire
 
 use 5.12.0;
 use namespace::sweep;

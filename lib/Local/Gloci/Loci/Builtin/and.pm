@@ -1,5 +1,6 @@
 {
 package Local::Gloci::Loci::Builtin::and 0.01;
+# ABSTRACT: Builtin logical conjuction (AND)
 
 use 5.12.0;
 use namespace::sweep;

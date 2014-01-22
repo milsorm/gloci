@@ -1,5 +1,6 @@
 {
 package Local::Gloci::Loci::Builtin::zero 0.01;
+# ABSTRACT: Builtin universal ground (zero signal)
 
 use 5.12.0;
 use namespace::sweep;

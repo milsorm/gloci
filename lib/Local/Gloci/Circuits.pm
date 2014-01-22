@@ -1,5 +1,6 @@
 {
 package Local::Gloci::Circuits 0.01;
+# ABSTRACT: Collection of known logical circuits
 
 use 5.12.0;
 use namespace::sweep;

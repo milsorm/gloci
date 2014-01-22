@@ -1,5 +1,6 @@
 {
 package Local::Gloci::Loci 0.01;
+# ABSTRACT: Logical circuit role and its core implementation
 
 use 5.12.0;
 use namespace::sweep;

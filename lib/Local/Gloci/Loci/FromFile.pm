@@ -1,5 +1,6 @@
 {
 package Local::Gloci::Loci::FromFile 0.01;
+# ABSTRACT: Circuit based on file description
 
 use 5.12.0;
 use namespace::sweep;
