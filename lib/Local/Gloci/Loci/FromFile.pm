@@ -3,7 +3,6 @@ package Local::Gloci::Loci::FromFile 0.01;
 # ABSTRACT: Circuit based on file description
 
 use 5.12.0;
-no if $] >= 5.018, warnings => "experimental";
 
 use namespace::sweep;
 use Mouse;
@@ -91,94 +90,88 @@ sub load_circuit {
         }
         
         my $line = $_;
-        given ( $group ) {
-            when ( /^name$/ ) {
-                $name .= ' ' if $name;
-                $name .= $line;
-            }
-            
-            when ( /^desc$/ ) {
-                $desc .= "\n" if $desc;
-                $desc .= $line;
-            }
-            
-            when ( /^(?:input|output|debug|temp)$/ ) {
-                if ( $line =~ /^(?<wire>\w+)(?:\<(?<rfrom>[0-9a-f]):(?<rto>[0-9a-f])\>)?\s+(?<desc>.*)$/ ) {
-                    if ( defined $+{rfrom} && $+{rfrom} ne '' && defined $+{rto} && $+{rto} ne '' ) {
-                        # create wires $+{wire} with suffixes from $+{rfrom} to $+{rto}
-                        for my $wirename ( $self->range( name => $+{wire}, from => $+{rfrom}, to => $+{rto} ) ) {
-                            if ( exists $wires{ $group }->{ $wirename } ) {
-                                croak( "Duplicate wire definition for $wirename." );
-                            } else {
-                                $wires{ $group }->{ $wirename } = $+{desc};
-                            }
-                        }
-                    } else {
-                        if ( exists $wires{ $group }->{ $+{wire} } ) {
-                            croak( "Duplicate wire definition for $+{wire}." );
+        if ( $group eq 'name' ) {
+            $name .= ' ' if $name;
+            $name .= $line;
+
+        } elsif ( $group eq 'desc' ) {
+            $desc .= "\n" if $desc;
+            $desc .= $line;
+
+        } elsif ( $group eq 'input' || $group eq 'output' || $group eq 'debug' || $group eq 'temp' ) {
+            if ( $line =~ /^(?<wire>\w+)(?:\<(?<rfrom>[0-9a-f]):(?<rto>[0-9a-f])\>)?\s+(?<desc>.*)$/ ) {
+                if ( defined $+{rfrom} && $+{rfrom} ne '' && defined $+{rto} && $+{rto} ne '' ) {
+                    # create wires $+{wire} with suffixes from $+{rfrom} to $+{rto}
+                    for my $wirename ( $self->range( name => $+{wire}, from => $+{rfrom}, to => $+{rto} ) ) {
+                        if ( exists $wires{ $group }->{ $wirename } ) {
+                            croak( "Duplicate wire definition for $wirename." );
                         } else {
-                            $wires{ $group }->{ $+{wire} } = $+{desc};
+                            $wires{ $group }->{ $wirename } = $+{desc};
                         }
                     }
                 } else {
-                    croak( "Unknown $group wire definition $line." );
+                    if ( exists $wires{ $group }->{ $+{wire} } ) {
+                        croak( "Duplicate wire definition for $+{wire}." );
+                    } else {
+                        $wires{ $group }->{ $+{wire} } = $+{desc};
+                    }
                 }
+            } else {
+                croak( "Unknown $group wire definition $line." );
             }
             
-            when ( /^process$/ ) {
-                if ( $line =~ /^(?<circuit>\[\w+\]|--)(?:\s+(?<def>.*))?$/ ) {
-                    my $circuit = $+{circuit};
-                    my @connections = ();
-                    
-                    if ( defined $+{def} && $+{def} ) {
-                        for ( split /,\s*/, $+{def} ) {
-                            if ( /^(?<from>\@?\w+)(?:\<(?<fromrfrom>[0-9a-f]):(?<fromrto>[0-9a-f])\>)?\s*=\s*(?<to>\@?\w+)(?:\<(?<torfrom>[0-9a-f]):(?<torto>[0-9a-f])\>)?$/ ) {
-                                my @from = ();  my @to = ();
-                                if ( defined $+{fromrfrom} && $+{fromrfrom} ne '' && defined $+{fromrto} && $+{fromrto} ne '' ) {
-                                    @from = $self->range( name => $+{from}, from => $+{fromrfrom}, to => $+{fromrto} );   
-                                } else {
-                                    @from = ( $+{from} );
-                                }
-                                if ( defined $+{torfrom} && $+{torfrom} ne '' && defined $+{torto} && $+{torto} ne '' ) {
-                                    @to = $self->range( name => $+{from}, from => $+{torfrom}, to => $+{torto} );   
-                                } else {
-                                    @to = ( $+{to} );
-                                }
-                                    
-                                if ( scalar @from == 0 || scalar @to == 0 ) {
-                                    croak( "Invalid assignment in [$circuit]." );
-                                }
-                                    
-                                if ( scalar @from < scalar @to ) {
-                                    my @from_orig = @from;
-                                    @from = ( @from, @from_orig ) while scalar @from < scalar @to;
-                                    pop @from while scalar @from > scalar @to;
-                                } elsif ( scalar @from > scalar @to ) {
-                                    my @to_orig = @to;
-                                    @to = ( @to, @to_orig ) while scalar @from > scalar @to;
-                                    pop @to while scalar @from < scalar @to;
-                                }
-                                    
-                                for my $from ( @from ) {
-                                    my $to = shift @to;
-                                    ( $from, $to ) = ( $to, $from ) if $from !~ /^\@/ && $to =~ /^\@/;
-                                    push @connections, { from => $from, to => $to };
-                                }
+        } elsif ( $group eq 'process' ) {
+            if ( $line =~ /^(?<circuit>\[\w+\]|--)(?:\s+(?<def>.*))?$/ ) {
+                my $circuit = $+{circuit};
+                my @connections = ();
+                
+                if ( defined $+{def} && $+{def} ) {
+                    for ( split /,\s*/, $+{def} ) {
+                        if ( /^(?<from>\@?\w+)(?:\<(?<fromrfrom>[0-9a-f]):(?<fromrto>[0-9a-f])\>)?\s*=\s*(?<to>\@?\w+)(?:\<(?<torfrom>[0-9a-f]):(?<torto>[0-9a-f])\>)?$/ ) {
+                            my @from = ();  my @to = ();
+                            if ( defined $+{fromrfrom} && $+{fromrfrom} ne '' && defined $+{fromrto} && $+{fromrto} ne '' ) {
+                                @from = $self->range( name => $+{from}, from => $+{fromrfrom}, to => $+{fromrto} );   
                             } else {
-                                croak( "Unknown connection definition $_ for $circuit." );
+                                @from = ( $+{from} );
                             }
+                            if ( defined $+{torfrom} && $+{torfrom} ne '' && defined $+{torto} && $+{torto} ne '' ) {
+                                @to = $self->range( name => $+{from}, from => $+{torfrom}, to => $+{torto} );   
+                            } else {
+                                @to = ( $+{to} );
+                            }
+                                
+                            if ( scalar @from == 0 || scalar @to == 0 ) {
+                                croak( "Invalid assignment in [$circuit]." );
+                            }
+                                
+                            if ( scalar @from < scalar @to ) {
+                                my @from_orig = @from;
+                                @from = ( @from, @from_orig ) while scalar @from < scalar @to;
+                                pop @from while scalar @from > scalar @to;
+                            } elsif ( scalar @from > scalar @to ) {
+                                my @to_orig = @to;
+                                @to = ( @to, @to_orig ) while scalar @from > scalar @to;
+                                pop @to while scalar @from < scalar @to;
+                            }
+                                
+                            for my $from ( @from ) {
+                                my $to = shift @to;
+                                ( $from, $to ) = ( $to, $from ) if $from !~ /^\@/ && $to =~ /^\@/;
+                                push @connections, { from => $from, to => $to };
+                            }
+                        } else {
+                            croak( "Unknown connection definition $_ for $circuit." );
                         }
                     }
-                    
-                    push @process, { circuit => $circuit, connections => \@connections };
-                } else {
-                    croak( "Unknown internal connection definition $line." );
                 }
+                
+                push @process, { circuit => $circuit, connections => \@connections };
+            } else {
+                croak( "Unknown internal connection definition $line." );
             }
             
-            default {
-                croak( "Unknown instruction $_ in group $group." );
-            }
+        } else {
+            croak( "Unknown instruction $_ in group $group." );
         }
     }
 
