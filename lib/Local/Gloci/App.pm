@@ -1,5 +1,6 @@
 {
 package Local::Gloci::App 0.01;
+# ABSTRACT: Main application code for gloci (Genius Logical Circuits)
 
 use 5.12.0;
 use namespace::sweep;
