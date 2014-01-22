@@ -19,14 +19,14 @@ use Gloci::Sugar;
 extends 'Gloci::Base';
 
 has check => (
-    is      => 'rw',
-    isa     => 'Bool',
-    default => 0,
+    is          => 'rw',
+    isa         => 'Bool',
+    default     => 0,
 );
 
 has file => (
-    is      => 'rw',
-    isa     => 'IO::Handle',
+    is          => 'rw',
+    isa         => 'IO::Handle',
 );
 
 has main_name => (

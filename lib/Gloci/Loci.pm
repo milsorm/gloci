@@ -13,42 +13,14 @@ has sysid => (
     required    => 1,
 );
 
-has name => (
+has [ qw/name description/ ] => (
     is          => 'rw',
     isa         => 'Str',
     init_arg    => undef,
     default     => '',
 );
 
-has description => (
-    is          => 'rw',
-    isa         => 'Str',
-    init_arg    => undef,
-    default     => '',
-);
-
-has input_wires => (
-    is          => 'rw',
-    isa         => 'HashRef',
-    init_arg    => undef,
-    default     => sub { {} },
-);
-
-has output_wires => (
-    is          => 'rw',
-    isa         => 'HashRef',
-    init_arg    => undef,
-    default     => sub { {} },
-);
-
-has temp_wires => (
-    is          => 'rw',
-    isa         => 'HashRef',
-    init_arg    => undef,
-    default     => sub { {} },
-);
-
-has debug_wires => (
+has [ qw/input_wires output_wires temp_wires debug_wires/ ] => (
     is          => 'rw',
     isa         => 'HashRef',
     init_arg    => undef,
