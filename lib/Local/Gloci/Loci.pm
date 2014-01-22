@@ -76,11 +76,17 @@ sub required_circuits {
     return map { $_->{circuit} } @{ $self->processing };
 }
 
+sub required_input_wires {
+    args my $self;
+    
+    return keys %{ $self->input_wires };
+}
+
 # transform inputs to outputs
 sub execute {
     args
         my $self,
-        my $inputs = 'HashRef';
+        my $inputs => 'HashRef';
 
     # plan:
     # - check if all inputs are present
@@ -88,6 +94,7 @@ sub execute {
     # - get output from these circuits to temporary / debug
     # - loop until all circuits are satisfied (every circuit call once)
     # - return output wires
+    ...;
     
     return {};
 }

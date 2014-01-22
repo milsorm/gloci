@@ -41,6 +41,14 @@ sub exist {
     return exists $self->circuits->{ $sysid };
 }
 
+sub get {
+    args
+        my $self,
+        my $sysid => 'Str';
+        
+    return $self->exist( sysid => $sysid ) ? $self->circuits->{ $sysid } : undef;
+}
+
 no Mouse;
 no Mouse::Util::TypeConstraints;
 __PACKAGE__->meta->make_immutable;

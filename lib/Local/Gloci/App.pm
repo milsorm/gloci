@@ -66,10 +66,24 @@ sub run {
     
     $self->_process_file( input => $self->file, sysid => $self->main_name );
 
-    # TODO:
-    # - start process the whole circuit
+    $self->_execute();
+}
+
+sub _execute () {
+    args my $self;
     
-    ...;    
+    my $primary_circuit = $self->circuits->get( sysid => $self->main_name );
+
+    my %input_wires = ();    
+    for ( $primary_circuit->required_input_wires ) {
+        # if not set, than zero !!! LATER: permute
+        $input_wires{ $_ } = exists $self->input_wires->{ $_ } ? $self->input_wires->{ $_ } : 0;
+    }
+
+    my %output_wires = $primary_circuit->execute( inputs => \%input_wires );
+    
+    say "Result:";
+    say sprintf "%-20s : %s", $_, $output_wires{ $_ } for sort keys %output_wires;
 }
 
 sub _build_builtins {
@@ -78,7 +92,7 @@ sub _build_builtins {
     my %builtins = ( instanceof 'Local::Gloci::BuiltinFactory' )->createBuiltins;
     for ( keys %builtins ) {
         $self->circuits->add( sysid => $_, circuit => $builtins{ $_ } );
-        $self->_verbose( message => "GLOCI: Logical builtin circuit [$_] added to repository.", level => 1 );        
+        $self->_verbose( message => "GLOCI: Logical builtin circuit [$_] added to repository.", level => 1 );
     }
 }
 
