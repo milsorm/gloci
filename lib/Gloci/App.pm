@@ -14,6 +14,8 @@ use IO::Handle;
 use File::Spec;
 use File::Find::Rule;
 
+use Gloci::Sugar;
+
 extends 'Gloci::Base';
 
 has check => (
@@ -57,7 +59,7 @@ sub run {
 
     $self->_parse_arguments;
     
-    $self->circuits( $self->createInstance( class => 'Gloci::Circuits' ) );
+    $self->circuits( instanceof 'Gloci::Circuits' );
 
     $self->_build_builtins();    
     
@@ -72,7 +74,7 @@ sub run {
 sub _build_builtins {
     args my $self;
     
-    my %builtins = $self->createInstance( class => 'Gloci::BuiltinFactory' )->createBuiltins;
+    my %builtins = ( instanceof 'Gloci::BuiltinFactory' )->createBuiltins;
     for ( keys %builtins ) {
         $self->circuits->add( sysid => $_, circuit => $builtins{ $_ } );
         $self->_verbose( message => "GLOCI: Logical builtin circuit [$_] added to repository.", level => 1 );        
@@ -179,13 +181,15 @@ sub _find_file {
     return '';
 }
 
+use Gloci::Base;
+
 sub _process_file {
     args
         my $self,
         my $input => 'IO::Handle',
         my $sysid => 'Str';
 
-    my $loci = $self->createInstance( class => 'Gloci::Loci::FromFile', args => [ handle => $input, sysid => $sysid ] );
+    my $loci = instanceof 'Gloci::Loci::FromFile' => ( handle => $input, sysid => $sysid );   
 
     croak( "Logical circuit $sysid cannot be loaded." ) unless defined $loci && $loci->ok;
     

@@ -7,6 +7,8 @@ use Mouse;
 use Smart::Args;
 use Module::Util qw/find_in_namespace/;
 
+use Gloci::Sugar;
+
 extends 'Gloci::Base';
 
 sub createBuiltins {
@@ -23,7 +25,7 @@ sub createBuiltins {
 
         $self->_verbose( message => "GLOCI: Find [$circuit_name] in $module.", level => 1 );
         
-        my $loci = $self->createInstance( class => $module, args => [ sysid => $circuit_name ] );
+        my $loci = instanceof $module => ( sysid => $circuit_name );
         $circuits{ $circuit_name } = $loci;
     }
     
