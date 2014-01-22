@@ -1,4 +1,3 @@
-- move to App::Gloci from Gloci:: ?
 - prepare as dzil package for easy deployment ?
 
 - implementation:

@@ -1,14 +1,14 @@
 {
-package Gloci::Loci::Builtin::wire 0.01;
+package Local::Gloci::Loci::Builtin::wire 0.01;
 
 use 5.12.0;
 use namespace::sweep;
 use Mouse;
 use Smart::Args;
 
-extends 'Gloci::Base';
+extends 'Local::Gloci::Base';
 
-with 'Gloci::Loci::Builtin';
+with 'Local::Gloci::Loci::Builtin';
 
 has '+sysid' => (
     default     => '--',

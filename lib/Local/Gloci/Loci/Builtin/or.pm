@@ -1,20 +1,20 @@
 {
-package Gloci::Loci::Builtin::and 0.01;
+package Local::Gloci::Loci::Builtin::or 0.01;
 
 use 5.12.0;
 use namespace::sweep;
 use Mouse;
 
-extends 'Gloci::Base';
+with 'Local::Gloci::Loci::Builtin';
 
-with 'Gloci::Loci::Builtin';
+extends 'Local::Gloci::Base';
 
 has '+name' => (
-    default     => 'Logical conjunction (AND)',
+    default     => 'Logical disjunction (OR)',
 );
 
 has '+description' => (
-    default     => 'out = a & b',
+    default     => 'out = a | b',
 );
 
 has '+input_wires' => (
@@ -22,7 +22,7 @@ has '+input_wires' => (
 );
 
 has '+output_wires' => (
-    default     => sub { { out => 'Conjucted signal A & B' } },
+    default     => sub { { out => 'Disjucted signal A | B' } },
 );
 
 no Mouse;

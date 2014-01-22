@@ -1,5 +1,5 @@
 {
-package Gloci::Loci 0.01;
+package Local::Gloci::Loci 0.01;
 
 use 5.12.0;
 use namespace::sweep;

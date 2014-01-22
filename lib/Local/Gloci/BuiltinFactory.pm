@@ -1,5 +1,5 @@
 {
-package Gloci::BuiltinFactory 0.01;
+package Local::Gloci::BuiltinFactory 0.01;
 
 use 5.12.0;
 use namespace::sweep;
@@ -7,9 +7,9 @@ use Mouse;
 use Smart::Args;
 use Module::Util qw/find_in_namespace/;
 
-use Gloci::Sugar;
+use Local::Gloci::Sugar;
 
-extends 'Gloci::Base';
+extends 'Local::Gloci::Base';
 
 sub createBuiltins {
     args my $self;
@@ -18,7 +18,7 @@ sub createBuiltins {
     
     $self->_verbose( message => "GLOCI: Trying to find all builtins through factory.", level => 1 );
     
-    for my $module ( find_in_namespace( 'Gloci::Loci::Builtin' ) ) {
+    for my $module ( find_in_namespace( 'Local::Gloci::Loci::Builtin' ) ) {
         my $circuit_name = $module;
         $circuit_name =~ s/^.*:://;
         $circuit_name = '--' if $circuit_name eq 'wire';

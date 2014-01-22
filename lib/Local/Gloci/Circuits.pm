@@ -1,5 +1,5 @@
 {
-package Gloci::Circuits 0.01;
+package Local::Gloci::Circuits 0.01;
 
 use 5.12.0;
 use namespace::sweep;
@@ -8,9 +8,9 @@ use Mouse::Util::TypeConstraints;
 use Smart::Args;
 use Carp;
 
-extends 'Gloci::Base';
+extends 'Local::Gloci::Base';
 
-role_type 'Gloci::Loci';
+role_type 'Local::Gloci::Loci';
 
 has circuits => (
     is          => 'rw',
@@ -23,7 +23,7 @@ sub add {
     args
         my $self,
         my $sysid => 'Str',
-        my $circuit => 'Gloci::Loci';
+        my $circuit => 'Local::Gloci::Loci';
         
     if ( $self->exist( sysid => $sysid ) ) {
         croak( "Cannot add second definition for [$sysid] circuit." );

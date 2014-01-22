@@ -1,12 +1,12 @@
 {
-package Gloci::Loci::Builtin 0.01;
+package Local::Gloci::Loci::Builtin 0.01;
 
 use 5.12.0;
 use namespace::sweep;
 use Mouse::Role;
 use Smart::Args;
 
-with 'Gloci::Loci';
+with 'Local::Gloci::Loci';
 
 sub execute {
     args

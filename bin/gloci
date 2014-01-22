@@ -5,9 +5,9 @@ use warnings;
 
 use FindBin qw/$Bin/;
 use lib $Bin . '/../lib';
-use Gloci::App;
+use Local::Gloci::App;
 
-my $gloci = new Gloci::App;
+my $gloci = new Local::Gloci::App;
 
 $gloci->run();
 

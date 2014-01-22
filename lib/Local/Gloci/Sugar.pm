@@ -1,5 +1,5 @@
 {
-package Gloci::Sugar 0.01;
+package Local::Gloci::Sugar 0.01;
 
 use 5.12.0;
 use namespace::sweep;

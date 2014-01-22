@@ -1,5 +1,5 @@
 {
-package Gloci::Loci::FromFile 0.01;
+package Local::Gloci::Loci::FromFile 0.01;
 
 use 5.12.0;
 use namespace::sweep;
@@ -9,9 +9,9 @@ use Smart::Args;
 use IO::Handle;
 use Carp;
 
-extends 'Gloci::Base';
+extends 'Local::Gloci::Base';
 
-with 'Gloci::Loci';
+with 'Local::Gloci::Loci';
 
 subtype Char => (
     as 'String',

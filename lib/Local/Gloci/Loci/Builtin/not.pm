@@ -1,13 +1,13 @@
 {
-package Gloci::Loci::Builtin::not 0.01;
+package Local::Gloci::Loci::Builtin::not 0.01;
 
 use 5.12.0;
 use namespace::sweep;
 use Mouse;
 
-extends 'Gloci::Base';
+extends 'Local::Gloci::Base';
 
-with 'Gloci::Loci::Builtin';
+with 'Local::Gloci::Loci::Builtin';
 
 has '+name' => (
     default     => 'Logical inverter (NOT)',
